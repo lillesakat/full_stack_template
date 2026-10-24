@@ -1,6 +1,6 @@
 ﻿using Domain.Rules;
 
-namespace Tests.Domain;
+namespace Tests.Unit;
 
 public class DateRangeTests
 {
