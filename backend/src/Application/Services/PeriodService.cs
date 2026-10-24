@@ -1,20 +1,21 @@
 ﻿using Application.DTOs;
 using Application.Exceptions;
 using Application.Interfaces;
+using Application.Validators;
 using Domain.Entities;
-using Domain.Rules;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services;
 
 public class PeriodService : IPeriodService
 {
-    private const int NameMaxLength = 100;
     private readonly IAppDbContext _db;
+    private readonly PeriodValidator _validator;
 
-    public PeriodService(IAppDbContext db)
+    public PeriodService(IAppDbContext db, PeriodValidator validator)
     {
         _db = db;
+        _validator = validator;
     }
 
     public async Task<IReadOnlyList<PeriodDto>> GetAllAsync()
@@ -35,7 +36,7 @@ public class PeriodService : IPeriodService
 
     public async Task<PeriodDto> CreateAsync(SavePeriodRequest request)
     {
-        await ValidateAsync(request, excludeId: null);
+        await _validator.ValidateAsync(request, excludeId: null);
 
         var period = new Period
         {
@@ -53,7 +54,7 @@ public class PeriodService : IPeriodService
     public async Task<PeriodDto> UpdateAsync(int id, SavePeriodRequest request)
     {
         var period = await FindOrThrowAsync(id);
-        await ValidateAsync(request, excludeId: id);
+        await _validator.ValidateAsync(request, excludeId: id);
 
         period.Name = request.Name!.Trim();
         period.StartDate = request.StartDate;
@@ -78,47 +79,4 @@ public class PeriodService : IPeriodService
             ?? throw new NotFoundException($"Perioden med id {id} findes ikke.");
     }
 
-
-    // Samler alle fejl, før der kastes, så brugeren ser alle problemer på én gang.
-    private async Task ValidateAsync(SavePeriodRequest request, int? excludeId)
-    {
-        var errors = new Dictionary<string, string>();
-
-        if (string.IsNullOrWhiteSpace(request.Name))
-            errors["name"] = "Navn er påkrævet.";
-        else if (request.Name.Trim().Length > NameMaxLength)
-            errors["name"] = $"Navn må højst være {NameMaxLength} tegn.";
-
-
-        if (request.StartDate == default)
-            errors["startDate"] = "Startdato er påkrævet.";
-        if (request.EndDate == default)
-            errors["endDate"] = "Slutdato er påkrævet.";
-
-        if (!errors.ContainsKey("startDate") && !errors.ContainsKey("endDate"))
-        {
-            if (request.StartDate >= request.EndDate)
-            {
-                errors["endDate"] = "Slutdato skal være efter startdato.";
-            }
-            else
-            {
-
-                var otherPeriods = await _db.Periods
-                    .AsNoTracking()
-                    .Where(p => p.Id != excludeId)
-                    .ToListAsync();
-
-                var overlapping = otherPeriods.FirstOrDefault(p =>
-                    DateRange.Overlaps(request.StartDate, request.EndDate, p.StartDate, p.EndDate));
-
-                if (overlapping is not null)
-                    errors["startDate"] = $"Perioden overlapper med \"{overlapping.Name}\" " +
-                                          $"({overlapping.StartDate:dd-MM-yyyy} til {overlapping.EndDate:dd-MM-yyyy}).";
-            }
-        }
-
-        if (errors.Count > 0)
-            throw new ValidationException(errors);
-    }
 }
