@@ -24,4 +24,8 @@
     <Folder Include="Application\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\src\Core\Domain.csproj" />
+  </ItemGroup>
+
 </Project>
