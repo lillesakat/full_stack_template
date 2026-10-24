@@ -1,35 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿namespace Domain.Entities;
 
-
-namespace Domain.Entities
+public class Department
 {
-	public class Department : BaseEntity
-	{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Color { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(100, MinimumLength = 3, ErrorMessage = "Department name has to be longer than 3 characters, and it can't exceed 100 characters")] 
-        public string Name { get; set; }
+    public List<Employment> Employments { get; set; } = new();
 
-        [Required]
-        [StringLength(100, MinimumLength = 3, ErrorMessage = "Department address has to be longer than 3 characters, and it can't exceed 100 characters.")]
-		public string Address { get; set; }
-
-        //FK refererer til den departmenttype, som denne department tilhører.
-        [Range(0, int.MaxValue, ErrorMessage = "ID number must be between 0 and int32")]
-        public Guid? DepartmentTypeId { get; set; }
-
-		public DepartmentType DepartmentType { get; set; }
-
-		//Samling af en departments tilknyttede usere. Foreign key for department findes i User model.
-		public List<User> Users { get; set; } = new List<User>();
-
-		//Samling af doctor typer som er tilknyttet til en department
-		public List<DoctorType> DoctorTypes { get; set; } = new List<DoctorType>();
-
-		public Department() { }
-
-        
-    }
 }
