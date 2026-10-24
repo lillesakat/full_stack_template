@@ -11,5 +11,5 @@ public interface IAppDbContext
     DbSet<User> Users { get; }
     DbSet<Employment> Employments { get; }
 
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
