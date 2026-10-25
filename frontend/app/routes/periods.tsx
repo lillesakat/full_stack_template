@@ -1,10 +1,21 @@
+import { useState } from "react";
 import { DataTable, type Column, type Filter } from "~/components/DataTable";
+import { DeleteDialog } from "~/components/DeleteDialog";
+import { PeriodFormDialog } from "~/components/PeriodFormDialog";
+import { primaryButton, rowActionButton, rowDeleteButton } from "~/components/buttonStyles";
+import { runAction } from "~/services/actionResult";
 import { periodsApi } from "~/services/apiService";
-import type { PeriodDto } from "~/types/api";
+import type { PeriodDto, SavePeriodRequest } from "~/types/api";
 import { formatDate, todayAsDateString } from "~/utils/dates";
+import { getId, getOptionalText, getText } from "~/utils/formData";
 import type { Route } from "./+types/periods";
 
 type PeriodStatus = "Afsluttet" | "Igangværende" | "Kommende";
+
+type DialogState =
+  | { type: "closed" }
+  | { type: "form"; period?: PeriodDto }
+  | { type: "delete"; period: PeriodDto };
 
 export function meta() {
   return [{ title: "Perioder – Vagtplan" }];
@@ -12,6 +23,30 @@ export function meta() {
 
 export async function clientLoader() {
   return await periodsApi.getAll();
+}
+
+export async function clientAction({ request }: Route.ClientActionArgs) {
+  const formData = await request.formData();
+  const intent = formData.get("intent");
+
+  switch (intent) {
+    case "create":
+      return runAction(() => periodsApi.create(readPeriod(formData)));
+    case "update":
+      return runAction(() => periodsApi.update(getId(formData), readPeriod(formData)));
+    case "delete":
+      return runAction(() => periodsApi.remove(getId(formData)));
+    default:
+      throw new Error(`Ukendt handling: ${intent}`);
+  }
+}
+
+function readPeriod(formData: FormData): SavePeriodRequest {
+  return {
+    name: getText(formData, "name"),
+    startDate: getOptionalText(formData, "startDate"),
+    endDate: getOptionalText(formData, "endDate"),
+  };
 }
 
 /**
@@ -54,9 +89,16 @@ const filters: Filter<PeriodDto>[] = [
 ];
 
 export default function PeriodsPage({ loaderData }: Route.ComponentProps) {
+  const [dialog, setDialog] = useState<DialogState>({ type: "closed" });
+
+  function closeDialog() {
+    setDialog({ type: "closed" });
+  }
+
   return (
     <>
       <h1 className="mb-6 text-2xl font-semibold">Perioder</h1>
+
       <DataTable
         rows={loaderData}
         columns={columns}
@@ -64,7 +106,42 @@ export default function PeriodsPage({ loaderData }: Route.ComponentProps) {
         getRowKey={(period) => period.id}
         emptyMessage="Der er ingen perioder endnu."
         defaultSort={{ key: "startDate", direction: "asc" }}
+        toolbarAction={
+          <button type="button" onClick={() => setDialog({ type: "form" })} className={primaryButton}>
+            Opret periode
+          </button>
+        }
+        rowActions={(period) => (
+          <div className="flex justify-end gap-4">
+            <button
+              type="button"
+              onClick={() => setDialog({ type: "form", period })}
+              aria-label={`Rediger ${period.name}`}
+              className={rowActionButton}
+            >
+              Rediger
+            </button>
+            <button
+              type="button"
+              onClick={() => setDialog({ type: "delete", period })}
+              aria-label={`Slet ${period.name}`}
+              className={rowDeleteButton}
+            >
+              Slet
+            </button>
+          </div>
+        )}
       />
+
+      {dialog.type === "form" && <PeriodFormDialog period={dialog.period} onClose={closeDialog} />}
+      {dialog.type === "delete" && (
+        <DeleteDialog
+          title="Slet periode"
+          message={`Er du sikker på, at du vil slette "${dialog.period.name}"?`}
+          id={dialog.period.id}
+          onClose={closeDialog}
+        />
+      )}
     </>
   );
 }

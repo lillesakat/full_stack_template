@@ -31,7 +31,9 @@ export default function AppLayout() {
       </nav>
 
       <main className="flex-1 p-8">
-        <Outlet />
+        <div className="max-w-6xl">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

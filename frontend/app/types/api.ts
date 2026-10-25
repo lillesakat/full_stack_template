@@ -11,7 +11,11 @@ export type PeriodDto = {
   endDate: DateString;
 };
 
-export type SavePeriodRequest = Omit<PeriodDto, "id">;
+export type SavePeriodRequest = {
+  name: string;
+  startDate: DateString | null;
+  endDate: DateString | null;
+};
 
 export type DepartmentDto = {
   id: number;
@@ -52,10 +56,14 @@ export type EmploymentDto = {
   endDate: DateString;
 };
 
-export type SaveEmploymentRequest = Pick<
-  EmploymentDto,
-  "userId" | "departmentId" | "staffGroupId" | "hoursPerWeek" | "startDate" | "endDate"
->;
+export type SaveEmploymentRequest = {
+  userId: number | null;
+  departmentId: number | null;
+  staffGroupId: number | null;
+  hoursPerWeek: number | null;
+  startDate: DateString | null;
+  endDate: DateString | null;
+};
 
 export type StaffMemberDto = {
   employmentId: number;

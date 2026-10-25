@@ -32,7 +32,8 @@ type DataTableProps<T> = {
   searchable?: boolean;
   filters?: Filter<T>[];
   defaultSort?: SortState;
-  actions?: (row: T) => ReactNode;
+  toolbarAction?: ReactNode;
+  rowActions?: (row: T) => ReactNode;
 };
 
 /**
@@ -47,7 +48,8 @@ export function DataTable<T>({
   searchable = true,
   filters = [],
   defaultSort,
-  actions,
+  toolbarAction,
+  rowActions,
 }: DataTableProps<T>) {
   const [search, setSearch] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string>>({});
@@ -101,6 +103,8 @@ export function DataTable<T>({
             </select>
           </label>
         ))}
+
+        {toolbarAction && <div className="ml-auto">{toolbarAction}</div>}
       </div>
 
       <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
@@ -121,12 +125,12 @@ export function DataTable<T>({
                   >
                     {column.header}
                     <span aria-hidden="true" className={sort?.key === column.key ? "" : "text-gray-300"}>
-  {                     sortIndicator(sort, column.key)}
+                      {sortIndicator(sort, column.key)}
                     </span>
                   </button>
                 </th>
               ))}
-              {actions && (
+              {rowActions && (
                 <th scope="col" className="px-4 py-3">
                   <span className="sr-only">Handlinger</span>
                 </th>
@@ -142,7 +146,7 @@ export function DataTable<T>({
                     {column.render ? column.render(row) : column.text(row)}
                   </td>
                 ))}
-                {actions && <td className="px-4 py-3 text-right">{actions(row)}</td>}
+                {rowActions && <td className="px-4 py-3 text-right">{rowActions(row)}</td>}
               </tr>
             ))}
           </tbody>
