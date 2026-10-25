@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import { FieldError, FieldLabel, inputClassName } from "./FormField";
 
 const fallbackColor = "#000000";
 const hexColorPattern = /^#[0-9A-Fa-f]{6}$/;
@@ -23,14 +24,7 @@ export function ColorField({ label, name, required = false, defaultValue = fallb
 
   return (
     <div className="mb-4">
-      <label htmlFor={id} className="mb-1 block text-sm font-medium text-gray-700">
-        {label}
-        {required && (
-          <span aria-hidden="true" className="text-red-600">
-            {" "}*
-          </span>
-        )}
-      </label>
+      <FieldLabel htmlFor={id} label={label} required={required} />
       <div className="flex items-center gap-2">
         <input
           type="color"
@@ -48,14 +42,10 @@ export function ColorField({ label, name, required = false, defaultValue = fallb
           onChange={(event) => setColor(event.target.value)}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
-          className={`w-full rounded-md border px-3 py-2 font-mono text-sm ${error ? "border-red-500" : "border-gray-300"}`}
+          className={`${inputClassName(Boolean(error))} font-mono`}
         />
       </div>
-      {error && (
-        <p id={errorId} className="mt-1 text-sm text-red-600">
-          {error}
-        </p>
-      )}
+      <FieldError id={errorId} message={error} />
     </div>
   );
 }
