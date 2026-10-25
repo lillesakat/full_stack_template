@@ -42,4 +42,17 @@ public class StaffGroupServiceTests : IDisposable
         // Assert
         Assert.Empty(await _service.GetAllAsync());
     }
+
+    [Fact]
+    public async Task GetAllAsync_StaffGroupWithEmployment_ReturnsEmploymentCount()
+    {
+        // Arrange
+        await _database.AddEmploymentAsync();
+
+        // Act
+        var staffGroups = await _service.GetAllAsync();
+
+        // Assert
+        Assert.Equal(1, staffGroups.Single().EmploymentCount);
+    }
 }

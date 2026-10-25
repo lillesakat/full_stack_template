@@ -20,18 +20,21 @@ public class StaffGroupService : IStaffGroupService
 
     public async Task<IReadOnlyList<StaffGroupDto>> GetAllAsync()
     {
-        var staffGroups = await _db.StaffGroups
+        return await _db.StaffGroups
             .AsNoTracking()
             .OrderBy(s => s.Name)
+            .Select(StaffGroupDto.Projection)
             .ToListAsync();
-
-        return staffGroups.Select(StaffGroupDto.FromEntity).ToList();
     }
 
     public async Task<StaffGroupDto> GetByIdAsync(int id)
     {
-        var staffGroup = await FindOrThrowAsync(id);
-        return StaffGroupDto.FromEntity(staffGroup);
+        return await _db.StaffGroups
+            .AsNoTracking()
+            .Where(s => s.Id == id)
+            .Select(StaffGroupDto.Projection)
+            .FirstOrDefaultAsync()
+            ?? throw new NotFoundException($"Personalegruppen med id {id} findes ikke.");
     }
 
     public async Task<StaffGroupDto> CreateAsync(SaveStaffGroupRequest request)
@@ -43,7 +46,7 @@ public class StaffGroupService : IStaffGroupService
         _db.StaffGroups.Add(staffGroup);
         await _db.SaveChangesAsync();
 
-        return StaffGroupDto.FromEntity(staffGroup);
+        return await GetByIdAsync(staffGroup.Id);
     }
 
     public async Task<StaffGroupDto> UpdateAsync(int id, SaveStaffGroupRequest request)
@@ -55,7 +58,7 @@ public class StaffGroupService : IStaffGroupService
 
         await _db.SaveChangesAsync();
 
-        return StaffGroupDto.FromEntity(staffGroup);
+        return await GetByIdAsync(id);
     }
 
     public async Task DeleteAsync(int id)

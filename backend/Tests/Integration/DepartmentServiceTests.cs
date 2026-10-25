@@ -69,4 +69,17 @@ public class DepartmentServiceTests : IDisposable
         // Assert
         Assert.Empty(await _service.GetAllAsync());
     }
+
+    [Fact]
+    public async Task GetAllAsync_DepartmentWithEmployment_ReturnsEmploymentCount()
+    {
+        // Arrange
+        await _database.AddEmploymentAsync();
+
+        // Act
+        var departments = await _service.GetAllAsync();
+
+        // Assert
+        Assert.Equal(1, departments.Single().EmploymentCount);
+    }
 }

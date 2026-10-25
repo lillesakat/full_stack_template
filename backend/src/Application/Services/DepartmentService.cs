@@ -20,18 +20,21 @@ public class DepartmentService : IDepartmentService
 
     public async Task<IReadOnlyList<DepartmentDto>> GetAllAsync()
     {
-        var departments = await _db.Departments
+        return await _db.Departments
             .AsNoTracking()
             .OrderBy(d => d.Name)
+            .Select(DepartmentDto.Projection)
             .ToListAsync();
-
-        return departments.Select(DepartmentDto.FromEntity).ToList();
     }
 
     public async Task<DepartmentDto> GetByIdAsync(int id)
     {
-        var department = await FindOrThrowAsync(id);
-        return DepartmentDto.FromEntity(department);
+        return await _db.Departments
+            .AsNoTracking()
+            .Where(d => d.Id == id)
+            .Select(DepartmentDto.Projection)
+            .FirstOrDefaultAsync()
+            ?? throw new NotFoundException($"Afsnittet med id {id} findes ikke.");
     }
 
     public async Task<DepartmentDto> CreateAsync(SaveDepartmentRequest request)
@@ -47,7 +50,7 @@ public class DepartmentService : IDepartmentService
         _db.Departments.Add(department);
         await _db.SaveChangesAsync();
 
-        return DepartmentDto.FromEntity(department);
+        return await GetByIdAsync(department.Id);
     }
 
     public async Task<DepartmentDto> UpdateAsync(int id, SaveDepartmentRequest request)
@@ -60,7 +63,7 @@ public class DepartmentService : IDepartmentService
 
         await _db.SaveChangesAsync();
 
-        return DepartmentDto.FromEntity(department);
+        return await GetByIdAsync(id);
     }
 
     public async Task DeleteAsync(int id)

@@ -1,11 +1,13 @@
 ﻿using Domain.Entities;
+using System.Linq.Expressions;
 
 namespace Application.DTOs;
 
-public record DepartmentDto(int Id, string Name, string Color)
+public record DepartmentDto(int Id, string Name, string Color, int EmploymentCount)
 {
-    public static DepartmentDto FromEntity(Department department)
-        => new(department.Id, department.Name, department.Color);
+    // Bruges direkte i databaseforespørgsler, så antallet af ansættelser tælles af databasen.
+    public static Expression<Func<Department, DepartmentDto>> Projection =>
+        department => new DepartmentDto(department.Id, department.Name, department.Color, department.Employments.Count);
 }
 
 // Bruges til både oprettelse og redigering.
