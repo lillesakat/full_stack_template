@@ -1,4 +1,3 @@
-
 /**
  * Dato i formatet ÅÅÅÅ-MM-DD, som API'et sender, og som HTML's datofelter bruger.
  */
@@ -21,16 +20,18 @@ export type DepartmentDto = {
   id: number;
   name: string;
   color: string;
+  employmentCount: number;
 };
 
-export type SaveDepartmentRequest = Omit<DepartmentDto, "id">;
+export type SaveDepartmentRequest = Pick<DepartmentDto, "name" | "color">;
 
 export type StaffGroupDto = {
   id: number;
   name: string;
+  employmentCount: number;
 };
 
-export type SaveStaffGroupRequest = Omit<StaffGroupDto, "id">;
+export type SaveStaffGroupRequest = Pick<StaffGroupDto, "name">;
 
 export type UserDto = {
   id: number;

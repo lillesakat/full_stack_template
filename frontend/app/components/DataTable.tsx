@@ -162,14 +162,6 @@ export function DataTable<T>({
   );
 }
 
-/**
- * Laver en filtermulighed for hver forskellig værdi
- */
-export function optionsFromValues<T>(rows: T[], getValue: (row: T) => string): FilterOption<T>[] {
-  const values = [...new Set(rows.map(getValue))].sort((a, b) => a.localeCompare(b, "da"));
-  return values.map((value) => ({ label: value, matches: (row) => getValue(row) === value }));
-}
-
 function matchesSearch<T>(row: T, columns: Column<T>[], search: string) {
   const query = search.trim().toLocaleLowerCase("da");
   if (query === "") return true;
