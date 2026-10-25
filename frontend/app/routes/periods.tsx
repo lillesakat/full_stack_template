@@ -7,11 +7,10 @@ import { primaryButton } from "~/components/buttonStyles";
 import { runAction } from "~/services/actionResult";
 import { periodsApi } from "~/services/apiService";
 import type { PeriodDto, SavePeriodRequest } from "~/types/api";
-import { formatDate, todayAsDateString } from "~/utils/dates";
+import { formatDate } from "~/utils/dates";
 import { getId, getOptionalText, getText } from "~/utils/formData";
+import { getPeriodStatus, type PeriodStatus } from "~/utils/periods";
 import type { Route } from "./+types/periods";
-
-type PeriodStatus = "Afsluttet" | "Igangværende" | "Kommende";
 
 type DialogState =
   | { type: "closed" }
@@ -48,16 +47,6 @@ function readPeriod(formData: FormData): SavePeriodRequest {
     startDate: getOptionalText(formData, "startDate"),
     endDate: getOptionalText(formData, "endDate"),
   };
-}
-
-/**
- * Status beregnes ud fra dags dato og bruges kun til filtrering i visningen.
- */
-function getPeriodStatus(period: PeriodDto): PeriodStatus {
-  const today = todayAsDateString();
-  if (period.endDate < today) return "Afsluttet";
-  if (period.startDate > today) return "Kommende";
-  return "Igangværende";
 }
 
 const columns: Column<PeriodDto>[] = [
