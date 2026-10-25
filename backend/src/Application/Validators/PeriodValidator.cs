@@ -27,7 +27,7 @@ public class PeriodValidator
 
         var datesAreValid = !errors.ContainsKey("startDate") && !errors.ContainsKey("endDate");
         if (datesAreValid)
-            await ValidateNoOverlapAsync(request.StartDate, request.EndDate, excludeId, errors);
+            await ValidateNoOverlapAsync(request.StartDate!.Value, request.EndDate!.Value, excludeId, errors);
 
         if (errors.Count > 0)
             throw new ValidationException(errors);

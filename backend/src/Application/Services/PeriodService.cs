@@ -41,8 +41,8 @@ public class PeriodService : IPeriodService
         var period = new Period
         {
             Name = request.Name!.Trim(),
-            StartDate = request.StartDate,
-            EndDate = request.EndDate
+            StartDate = request.StartDate!.Value,
+            EndDate = request.EndDate!.Value
         };
 
         _db.Periods.Add(period);
@@ -57,8 +57,8 @@ public class PeriodService : IPeriodService
         await _validator.ValidateAsync(request, excludeId: id);
 
         period.Name = request.Name!.Trim();
-        period.StartDate = request.StartDate;
-        period.EndDate = request.EndDate;
+        period.StartDate = request.StartDate!.Value;
+        period.EndDate = request.EndDate!.Value;
 
         await _db.SaveChangesAsync();
 

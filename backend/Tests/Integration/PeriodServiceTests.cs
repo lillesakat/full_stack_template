@@ -104,4 +104,19 @@ public class PeriodServiceTests : IDisposable
         // Assert
         await Assert.ThrowsAsync<NotFoundException>(act);
     }
+
+    [Fact]
+    public async Task CreateAsync_MissingDates_ThrowsValidationExceptionForBothDates()
+    {
+        // Arrange
+        var request = new SavePeriodRequest("Uden datoer", null, null);
+
+        // Act
+        var act = () => _service.CreateAsync(request);
+
+        // Assert
+        var exception = await Assert.ThrowsAsync<ValidationException>(act);
+        Assert.True(exception.Errors.ContainsKey("startDate"));
+        Assert.True(exception.Errors.ContainsKey("endDate"));
+    }
 }

@@ -85,8 +85,8 @@ public class EmploymentService : IEmploymentService
         employment.DepartmentId = request.DepartmentId!.Value;
         employment.StaffGroupId = request.StaffGroupId!.Value;
         employment.HoursPerWeek = request.HoursPerWeek!.Value;
-        employment.StartDate = request.StartDate;
-        employment.EndDate = request.EndDate;
+        employment.StartDate = request.StartDate!.Value;
+        employment.EndDate = request.EndDate!.Value;
     }
 
     private async Task<Employment> FindOrThrowAsync(int id)

@@ -33,7 +33,7 @@ public class EmploymentValidator
                               && !errors.ContainsKey("startDate")
                               && !errors.ContainsKey("endDate");
         if (canCheckOverlap)
-            await ValidateNoOverlapAsync(request.UserId!.Value, request.StartDate, request.EndDate, employmentId, errors);
+            await ValidateNoOverlapAsync(request.UserId!.Value, request.StartDate!.Value, request.EndDate!.Value, employmentId, errors);
 
         if (errors.Count > 0)
             throw new ValidationException(errors);
