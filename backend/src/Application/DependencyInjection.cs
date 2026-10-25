@@ -13,6 +13,8 @@ public static class DependencyInjection
         services.AddScoped<PeriodValidator>();
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<DepartmentValidator>();
+        services.AddScoped<IStaffGroupService, StaffGroupService>();
+        services.AddScoped<StaffGroupValidator>();
 
         return services;
     }
