@@ -30,6 +30,12 @@ public class GlobalExceptionHandler : IExceptionHandler
                 Title = "Ikke fundet.",
                 Detail = notFound.Message
             },
+            ConflictException conflict => new ProblemDetails
+            {
+                Status = StatusCodes.Status409Conflict,
+                Title = "Handlingen kan ikke udføres",
+                Detail = conflict.Message
+            },
             _ => new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,

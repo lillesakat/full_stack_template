@@ -8,7 +8,6 @@ namespace Application.Validators;
 
 public class PeriodValidator
 {
-    private const int NameMaxLength = 100;
     private readonly IAppDbContext _db;
 
     public PeriodValidator(IAppDbContext db)
@@ -23,7 +22,7 @@ public class PeriodValidator
     {
         var errors = new Dictionary<string, string>();
 
-        ValidateName(request.Name, errors);
+        NameValidation.Validate(request.Name, errors);
         ValidateDates(request.StartDate, request.EndDate, errors);
 
         var datesAreValid = !errors.ContainsKey("startDate") && !errors.ContainsKey("endDate");
@@ -34,13 +33,6 @@ public class PeriodValidator
             throw new ValidationException(errors);
     }
 
-    private static void ValidateName(string? name, Dictionary<string, string> errors)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            errors["name"] = "Navn er påkrævet.";
-        else if (name.Trim().Length > NameMaxLength)
-            errors["name"] = $"Navn må højst være {NameMaxLength} tegn.";
-    }
 
 
     // En manglende dato modtages som DateOnly's standardværdi, da DateOnly ikke kan være null

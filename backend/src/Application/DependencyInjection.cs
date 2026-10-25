@@ -11,6 +11,8 @@ public static class DependencyInjection
     {
         services.AddScoped<IPeriodService, PeriodService>();
         services.AddScoped<PeriodValidator>();
+        services.AddScoped<IDepartmentService, DepartmentService>();
+        services.AddScoped<DepartmentValidator>();
 
         return services;
     }
