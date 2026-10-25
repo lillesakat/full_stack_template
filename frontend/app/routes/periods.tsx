@@ -2,7 +2,8 @@ import { useState } from "react";
 import { DataTable, type Column, type Filter } from "~/components/DataTable";
 import { DeleteDialog } from "~/components/DeleteDialog";
 import { PeriodFormDialog } from "~/components/PeriodFormDialog";
-import { primaryButton, rowActionButton, rowDeleteButton } from "~/components/buttonStyles";
+import { RowActions } from "~/components/RowActions";
+import { primaryButton } from "~/components/buttonStyles";
 import { runAction } from "~/services/actionResult";
 import { periodsApi } from "~/services/apiService";
 import type { PeriodDto, SavePeriodRequest } from "~/types/api";
@@ -112,24 +113,11 @@ export default function PeriodsPage({ loaderData }: Route.ComponentProps) {
           </button>
         }
         rowActions={(period) => (
-          <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={() => setDialog({ type: "form", period })}
-              aria-label={`Rediger ${period.name}`}
-              className={rowActionButton}
-            >
-              Rediger
-            </button>
-            <button
-              type="button"
-              onClick={() => setDialog({ type: "delete", period })}
-              aria-label={`Slet ${period.name}`}
-              className={rowDeleteButton}
-            >
-              Slet
-            </button>
-          </div>
+          <RowActions
+            itemName={period.name}
+            onEdit={() => setDialog({ type: "form", period })}
+            onDelete={() => setDialog({ type: "delete", period })}
+          />
         )}
       />
 
