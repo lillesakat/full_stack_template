@@ -29,6 +29,9 @@ public static class DatabaseSeeder
         db.Users.AddRange(anna, bo, clara, karen);
 
         db.Periods.AddRange(
+            new Period { Name = "September 2026", StartDate = new DateOnly(2026, 9, 1), EndDate = new DateOnly(2026, 9, 30) },
+            new Period { Name = "Oktober 2026", StartDate = new DateOnly(2026, 10, 1), EndDate = new DateOnly(2026, 10, 31) },
+            new Period { Name = "November 2026", StartDate = new DateOnly(2026, 11, 1), EndDate = new DateOnly(2026, 11, 30) },
             new Period { Name = "December 2026", StartDate = new DateOnly(2026, 12, 1), EndDate = new DateOnly(2026, 12, 31) },
             new Period { Name = "Januar 2027", StartDate = new DateOnly(2027, 1, 1), EndDate = new DateOnly(2027, 1, 31) });
 
