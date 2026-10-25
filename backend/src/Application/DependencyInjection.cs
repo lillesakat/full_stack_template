@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<UserValidator>();
         services.AddScoped<IEmploymentService, EmploymentService>();
         services.AddScoped<EmploymentValidator>();
+        services.AddScoped<IStaffService, StaffService>();
 
         return services;
     }
