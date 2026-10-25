@@ -23,7 +23,7 @@ public class PeriodValidator
         var errors = new Dictionary<string, string>();
 
         NameValidation.Validate(request.Name, errors);
-        ValidateDates(request.StartDate, request.EndDate, errors);
+        DateValidation.Validate(request.StartDate, request.EndDate, errors);
 
         var datesAreValid = !errors.ContainsKey("startDate") && !errors.ContainsKey("endDate");
         if (datesAreValid)
@@ -31,20 +31,6 @@ public class PeriodValidator
 
         if (errors.Count > 0)
             throw new ValidationException(errors);
-    }
-
-
-
-    // En manglende dato modtages som DateOnly's standardværdi, da DateOnly ikke kan være null
-    private static void ValidateDates(DateOnly startDate, DateOnly endDate, Dictionary<string, string> errors)
-    {
-        if (startDate == default)
-            errors["startDate"] = "Startdato er påkrævet.";
-
-        if (endDate == default)
-            errors["endDate"] = "Slutdato er påkrævet.";
-        else if (startDate >= endDate)
-            errors["endDate"] = "Slutdato skal være efter startdato.";
     }
 
 
