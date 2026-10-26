@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ColorDot } from "~/components/ColorDot";
 import { DataTable, type Column, type Filter } from "~/components/DataTable";
 import { DeleteDialog } from "~/components/DeleteDialog";
 import { DepartmentFormDialog } from "~/components/DepartmentFormDialog";
@@ -55,11 +56,7 @@ const columns: Column<DepartmentDto>[] = [
     text: (department) => department.color,
     render: (department) => (
       <span className="flex items-center gap-2">
-        <span
-          aria-hidden="true"
-          className="h-4 w-4 rounded-full border border-gray-300"
-          style={{ backgroundColor: department.color }}
-        />
+        <ColorDot color={department.color} />
         <span className="font-mono">{department.color}</span>
       </span>
     ),

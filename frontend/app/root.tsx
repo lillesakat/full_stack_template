@@ -1,5 +1,6 @@
 import {
   isRouteErrorResponse,
+  Link,
   Links,
   Meta,
   Outlet,
@@ -8,9 +9,9 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import { primaryButton, secondaryButton } from "~/components/buttonStyles";
+import { ApiError } from "~/services/apiClient";
 import "./app.css";
-
-
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -34,28 +35,38 @@ export default function App() {
   return <Outlet />;
 }
 
+/**
+ * Vises, når en side ikke findes, eller når der opstår en fejl, som siden ikke selv viser.
+ */
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-  let message = "Oops!";
-  let details = "An unexpected error occurred.";
+  let title = "Der opstod en fejl";
+  let details = "Noget gik galt. Prøv igen, eller gå til forsiden.";
   let stack: string | undefined;
 
-  if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
-    details =
-      error.status === 404
-        ? "The requested page could not be found."
-        : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
+  if (isRouteErrorResponse(error) && error.status === 404) {
+    title = "Siden findes ikke";
+    details = "Den side, du leder efter, findes ikke.";
+  } else if (error instanceof ApiError) {
+    details = error.message;
+  } else if (import.meta.env.DEV && error instanceof Error) {
     details = error.message;
     stack = error.stack;
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
+    <main className="mx-auto max-w-2xl p-8">
+      <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
+      <p className="mt-2 text-gray-700">{details}</p>
+      <div className="mt-6 flex gap-3">
+        <button type="button" onClick={() => window.location.reload()} className={primaryButton}>
+          Prøv igen
+        </button>
+        <Link to="/" className={secondaryButton}>
+          Gå til forsiden
+        </Link>
+      </div>
       {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
+        <pre className="mt-6 overflow-x-auto rounded-md bg-gray-100 p-4 text-xs">
           <code>{stack}</code>
         </pre>
       )}
