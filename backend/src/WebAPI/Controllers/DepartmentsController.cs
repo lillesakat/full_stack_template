@@ -17,15 +17,14 @@ public class DepartmentsController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<DepartmentDto>>> GetAll()
-
         => Ok(await _departmentService.GetAllAsync());
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<DepartmentDto>> GetById(int id)
-    => Ok(await _departmentService.GetByIdAsync(id));
+        => Ok(await _departmentService.GetByIdAsync(id));
 
     [HttpPost]
-    public async Task<ActionResult<DepartmentDto>> Create([FromBody] SaveDepartmentRequest request)
+    public async Task<ActionResult<DepartmentDto>> Create(SaveDepartmentRequest request)
     {
         var createdDepartment = await _departmentService.CreateAsync(request);
         return CreatedAtAction(nameof(GetById), new { id = createdDepartment.Id }, createdDepartment);
@@ -41,5 +40,4 @@ public class DepartmentsController : ControllerBase
         await _departmentService.DeleteAsync(id);
         return NoContent();
     }
-
 }

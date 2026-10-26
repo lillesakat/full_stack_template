@@ -1,4 +1,6 @@
-﻿// Fælles regel for datointervaller: begge datoer er påkrævede, og slutdatoen skal være efter startdatoen.
+﻿namespace Application.Validators;
+
+// Fælles regel for datointervaller: begge datoer er påkrævede, og slutdatoen skal være efter startdatoen.
 public static class DateValidation
 {
     public static void Validate(DateOnly? startDate, DateOnly? endDate, IDictionary<string, string> errors)

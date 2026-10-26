@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\src\Application\Application.csproj" />
     <ProjectReference Include="..\src\Core\Domain.csproj" />
     <ProjectReference Include="..\src\Infrastructure\Infrastructure.csproj" />

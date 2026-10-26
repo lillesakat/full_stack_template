@@ -17,15 +17,14 @@ public class UsersController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<UserDto>>> GetAll()
-
         => Ok(await _userService.GetAllAsync());
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<UserDto>> GetById(int id)
-    => Ok(await _userService.GetByIdAsync(id));
+        => Ok(await _userService.GetByIdAsync(id));
 
     [HttpPost]
-    public async Task<ActionResult<UserDto>> Create([FromBody] SaveUserRequest request)
+    public async Task<ActionResult<UserDto>> Create(SaveUserRequest request)
     {
         var createdUser = await _userService.CreateAsync(request);
         return CreatedAtAction(nameof(GetById), new { id = createdUser.Id }, createdUser);
@@ -41,5 +40,4 @@ public class UsersController : ControllerBase
         await _userService.DeleteAsync(id);
         return NoContent();
     }
-
 }

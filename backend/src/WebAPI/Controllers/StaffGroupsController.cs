@@ -17,15 +17,14 @@ public class StaffGroupsController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<StaffGroupDto>>> GetAll()
-
         => Ok(await _staffGroupService.GetAllAsync());
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<StaffGroupDto>> GetById(int id)
-    => Ok(await _staffGroupService.GetByIdAsync(id));
+        => Ok(await _staffGroupService.GetByIdAsync(id));
 
     [HttpPost]
-    public async Task<ActionResult<StaffGroupDto>> Create([FromBody] SaveStaffGroupRequest request)
+    public async Task<ActionResult<StaffGroupDto>> Create(SaveStaffGroupRequest request)
     {
         var createdStaffGroup = await _staffGroupService.CreateAsync(request);
         return CreatedAtAction(nameof(GetById), new { id = createdStaffGroup.Id }, createdStaffGroup);
@@ -41,5 +40,4 @@ public class StaffGroupsController : ControllerBase
         await _staffGroupService.DeleteAsync(id);
         return NoContent();
     }
-
 }

@@ -17,15 +17,14 @@ public class PeriodsController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<PeriodDto>>> GetAll()
-
         => Ok(await _periodService.GetAllAsync());
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<PeriodDto>> GetById(int id)
-    => Ok(await _periodService.GetByIdAsync(id));
+        => Ok(await _periodService.GetByIdAsync(id));
 
     [HttpPost]
-    public async Task<ActionResult<PeriodDto>> Create([FromBody] SavePeriodRequest request)
+    public async Task<ActionResult<PeriodDto>> Create(SavePeriodRequest request)
     {
         var createdPeriod = await _periodService.CreateAsync(request);
         return CreatedAtAction(nameof(GetById), new { id = createdPeriod.Id }, createdPeriod);
@@ -41,5 +40,4 @@ public class PeriodsController : ControllerBase
         await _periodService.DeleteAsync(id);
         return NoContent();
     }
-
 }

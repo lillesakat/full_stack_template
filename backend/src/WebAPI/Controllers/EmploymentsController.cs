@@ -17,15 +17,14 @@ public class EmploymentsController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<EmploymentDto>>> GetAll()
-
         => Ok(await _employmentService.GetAllAsync());
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<EmploymentDto>> GetById(int id)
-    => Ok(await _employmentService.GetByIdAsync(id));
+        => Ok(await _employmentService.GetByIdAsync(id));
 
     [HttpPost]
-    public async Task<ActionResult<EmploymentDto>> Create([FromBody] SaveEmploymentRequest request)
+    public async Task<ActionResult<EmploymentDto>> Create(SaveEmploymentRequest request)
     {
         var createdEmployment = await _employmentService.CreateAsync(request);
         return CreatedAtAction(nameof(GetById), new { id = createdEmployment.Id }, createdEmployment);
@@ -41,5 +40,4 @@ public class EmploymentsController : ControllerBase
         await _employmentService.DeleteAsync(id);
         return NoContent();
     }
-
 }
