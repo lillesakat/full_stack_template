@@ -49,6 +49,8 @@ Frontend har én fil pr. side i `frontend/app/routes` og genbrugelige komponente
 
 ## Tekniske valg
 
+Alle valg, alternativer og fortolkninger af opgaven står i [beslutningsloggen](docs/beslutningslog.pdf). Kort fortalt:
+
 - **Backend:** C#, ASP.NET Core 8, Entity Framework Core 8 og SQLite. Tests med xUnit
 - **Frontend:** React 19, TypeScript, React Router 7 (SPA), Tailwind CSS 4 og Vite
 - **SQLite**, så løsningen kan køres uden at installere en database. Al dataadgang går gennem Entity Framework Core, så et skift til SQL Server er én linje og en ny migration
